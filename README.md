@@ -58,7 +58,7 @@ MyDrive/<br>
 ローカルPCで実行する場合はPython実行環境の構築が必要です。一方、GPU付きPCは
 処理自体には必須ではありません。ただし、現在のバッチファイルはGPU使用を前提
 にしています。<br>
-### 環境構築<br>
+### 環境構築
 - コマンドプロンプトを開く<br>
 - WSLが利用できるか確認する<br>
 　WSLがインストールされていない場合は、 wsl --install -d Ubuntu<br>
@@ -75,7 +75,7 @@ MyDrive/<br>
 - Pythonファイルの構文を確認する<br>
 - WSLを終了する<br>
 - リポジトリへ移動する<br>
-### Mask化処理実行<br>
+### Mask化処理実行
 - コマンドプロンプトを開く<br>
 - プロジェクトフォルダへ移動する<br>
 　cd /d C:\LLMatch2026<br>
@@ -86,7 +86,7 @@ MyDrive/<br>
 - 正常終了メッセージを確認する<br>
 　CSV saved: mask_trial_outputs/clinical_case_mask_trial3_YYYYMMDD_HHMMSS.csv<br>
 　TXT saved: mask_trial_outputs/clinical_case_mask_trial3_YYYYMMDD_HHMMSS.txt<br>
-### Filling化処理実行<br>
+### Filling化処理実行
 - コマンドプロンプトを開く<br>
 - プロジェクトフォルダへ移動する<br>
 　cd /d C:\LLMatch2026<br>
@@ -118,7 +118,7 @@ clinical_case_mask_filling4_YYYYMMDD_HHMMSS.csv: Filling化出力ファイル<br
 
 ## No.3 マスク手法に依るデータ増強
 　SYNTHETIC4HEALTH: generating annotated synthetic clinical letters<br>
-### 処理フロー概要<br>
+### 処理フロー概要
 - 前処理と特徴量抽出<br>
 　マスクをかける前に、まず「何を隠し、何を残すべきか」を判断するための解析<br>
 　　・構造の抽出<br>
@@ -141,15 +141,15 @@ clinical_case_mask_filling4_YYYYMMDD_HHMMSS.csv: Filling化出力ファイル<br
 <img src="docs/images/Flow01.jpg" alt="処理フロー" width="480">
 
 ### 使用モデル
-- MLM(Masked Language Model)モデル(Bio_ClinicalBERT等)
-　Mask-fillingの中心処理のモデル
-- 生成AI(BioGPT, GPT-3.5-Turbo等)
-　評価(LLM-as-a-Judge)モデル
+- MLM(Masked Language Model)モデル(Bio_ClinicalBERT等)<br>
+　Mask-fillingの中心処理のモデル<br>
+- 生成AI(BioGPT, GPT-3.5-Turbo等)<br>
+　評価(LLM-as-a-Judge)モデル<br>
 
 ### 将来のマスク処理向けモデル
-- Mask-filling向けモデルとして以下のモデルが検討されている。
-　・CLM(Causal Language Model: 因果的言語モデル)モデル
-　・ローカルLLM
+- Mask-filling向けモデルとして以下のモデルが検討されている。<br>
+　・CLM(Causal Language Model: 因果的言語モデル)モデル<br>
+　・ローカルLLM<br>
 
 ## 関連リンク(Related Links)
 Mask-Filling手法による合成データ作成<br>
