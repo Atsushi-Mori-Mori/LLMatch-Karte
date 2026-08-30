@@ -1,9 +1,9 @@
 # プロジェクト(Project)
-　松尾研LLM CommunityにおけるLLMatchでの電子カルテプロジェクトの取組みの一つである。
-本プロジェクトは日本では少ないアレナウィルス等の希少ウィルスの症例に対する
-自由形式のカルテからFHIR形式に構造化した電子カルテを作成することが目的である。
+　本プロジェクトは松尾研LLM CommunityにおけるLLMatchでの電子カルテプロジェクトの
+取組みの一つである。希少ウィルス感染の自由形式のカルテからFHIR形式の構造化電子カルテを
+作成することが目的である。日本ではほとんど感染例のないアレナウィルス等による感染症を扱う。
 本GithubではMask-Filling手法による合成データの試行について記載している。
-Mask-Filling手法について関連リンクの論文を参照のこと。<br>
+Mask-Filling手法については関連リンクに論文を示している。<br>
 
 <img src="docs/images/clinicalAI.jpg" alt="電子カルテ" width="480">
 
@@ -49,7 +49,8 @@ MyDrive/<br>
 ## 動作環境(Execution Environment)
 (1)バッチ処理<br>
 - Windows / Python(Anaconda等)など<br>
-(2)ノートブック<br>
+
+(2)ノートブック処理<br>
 - Google Colabo (with GPU)<br>
 
 ## 基本的な使い方(Basic Usage)
@@ -58,48 +59,46 @@ MyDrive/<br>
 処理自体には必須ではありません。ただし、現在のバッチファイルはGPU使用を前提
 にしています。<br>
 ### 環境構築<br>
-- 1. コマンドプロンプトを開く<br>
-- 2. WSLが利用できるか確認する<br>
+- コマンドプロンプトを開く<br>
+- WSLが利用できるか確認する<br>
 　WSLがインストールされていない場合は、 wsl --install -d Ubuntu<br>
-- 3. GPUがWSLから認識されるか確認する<br>
-- 4. 必要な基本コマンドをインストールする<br>
+- GPUがWSLから認識されるか確認する<br>
+- 必要な基本コマンドをインストールする<br>
 　sudo apt update<br>
 　sudo apt install -y curl ca-certificates<br>
-- 5. uvがインストールされているか確認する<br>
-　curl -LsSf https://astral.sh/uv/install.sh | sh<br>
-　source "$HOME/.local/bin/env"<br>
-- 6. Python 3.12をインストールする<br>
-- 7. maskfill_env 仮想環境を作成する<br>
-- 8. pipを更新する<br>
-- 9. CUDA対応PyTorchをインストールする<br>
-- 10. GPUがPyTorchから認識されるか確認する<br>
-- 11. Pythonファイルの構文を確認する<br>
-- 12. WSLを終了する<br>
-- 13. リポジトリへ移動する<br>
+- uvがインストールされているか確認する<br>
+- Python 3.12をインストールする<br>
+- maskfill_env 仮想環境を作成する<br>
+- pipを更新する<br>
+- CUDA対応PyTorchをインストールする<br>
+- GPUがPyTorchから認識されるか確認する<br>
+- Pythonファイルの構文を確認する<br>
+- WSLを終了する<br>
+- リポジトリへ移動する<br>
 ### Mask化処理実行<br>
-- 1. コマンドプロンプトを開く<br>
-- 2. プロジェクトフォルダへ移動する<br>
+- コマンドプロンプトを開く<br>
+- プロジェクトフォルダへ移動する<br>
 　cd /d C:\LLMatch2026<br>
-- 3. 入力CSVが存在することを確認する<br>
-- 4. 症例をMask化する<br>
+- 入力CSVが存在することを確認する<br>
+- 症例をMask化する<br>
 　run_mask_trial3.bat example/karte_example.csv mask_trial_outputs<br>
 　※3番目に引数で数字を付けると処理する症例数を示す。<br>
-- 5. 正常終了メッセージを確認する<br>
+- 正常終了メッセージを確認する<br>
 　CSV saved: mask_trial_outputs/clinical_case_mask_trial3_YYYYMMDD_HHMMSS.csv<br>
 　TXT saved: mask_trial_outputs/clinical_case_mask_trial3_YYYYMMDD_HHMMSS.txt<br>
 ### Filling化処理実行<br>
-- 1. コマンドプロンプトを開く<br>
-- 2. プロジェクトフォルダへ移動する<br>
+- コマンドプロンプトを開く<br>
+- プロジェクトフォルダへ移動する<br>
 　cd /d C:\LLMatch2026<br>
-- 3. Mask化CSVを確認する<br>
-- 4. Filling処理を実行する<br>
+- Mask化CSVを確認する<br>
+- Filling処理を実行する<br>
 　run_mask_filling_trial4.bat "" mask_filling_outputs 3 10 10<br>
   第1引数：入力CSV。""の場合は最新のMask化CSV<br>
   第2引数：出力フォルダ<br>
   第3引数：処理する入力症例数<br>
   第4引数：1症例当たりの生成数<br>
   第5引数：TOP_K<br>
-- 5. 実行設定を確認する<br>
+- 実行設定を確認する<br>
   処理開始時に次のような表示が出ます。<br>
   [INFO] Input CSV           : mask_trial_outputs/clinical_case_mask_trial3_YYYYMMDD_HHMMSS.csv<br>
   [INFO] Output dir          : mask_filling_outputs<br>
@@ -116,6 +115,41 @@ Mask化処理とFilling化処理で異なるフォルダに結果ファイルが
 clinical_case_mask_trial3_YYYYMMDD_HHMMSS.csv: Mask化出力ファイル<br>
 <Mask化出力ファイル:mask_filling_outputs><br>
 clinical_case_mask_filling4_YYYYMMDD_HHMMSS.csv: Filling化出力ファイル<br>
+
+## No.3 マスク手法に依るデータ増強
+　SYNTHETIC4HEALTH: generating annotated synthetic clinical letters<br>
+### 処理フロー概要<br>
+- 前処理と特徴量抽出<br>
+　マスクをかける前に、まず「何を隠し、何を残すべきか」を判断するための解析<br>
+　　・構造の抽出<br>
+　　・個人情報の特定<br>
+　　・医学用語･エンティティの認識<br>
+　　・品詞(POS)タグ付け<br>
+- マスク処理の実行<br>
+　特徴抽出の結果に基づき、以下の戦略でテキストの一部を <mask> トークンに置換<br>
+　　・ランダムマスク<br>
+　　・品詞ベースマスク<br>
+　　・ストップワードマスク<br>
+- 言語モデルによる穴埋め生成<br>
+　マスクされたテキスト（Masked Letters）を言語モデル（Bio_ClinicalBERT等）に入力<br>
+　　・単語予測による<mask>部分の埋め合わせ<br>
+　　・症例の臨床的事実を維持しつつ新合成カルテ生成<br>
+- 後処理<br>
+　　・匿名化個所の空白の充填<br>
+　　・誤記等のスペル修正で品質向上<br>
+
+<img src="docs/images/Flow01.jpg" alt="処理フロー" width="480">
+
+### 使用モデル
+- MLM(Masked Language Model)モデル(Bio_ClinicalBERT等)
+　Mask-fillingの中心処理のモデル
+- 生成AI(BioGPT, GPT-3.5-Turbo等)
+　評価(LLM-as-a-Judge)モデル
+
+### 将来のマスク処理向けモデル
+- Mask-filling向けモデルとして以下のモデルが検討されている。
+　・CLM(Causal Language Model: 因果的言語モデル)モデル
+　・ローカルLLM
 
 ## 関連リンク(Related Links)
 Mask-Filling手法による合成データ作成<br>
