@@ -14,15 +14,15 @@ karte_example.csv：PubMDから抽出の症例5サンプル<br>
 <21_バッチ処理関連ファイル(1)><br>
 run_mask_trial3.bat：Mask化バッチ処理Trial3<br>
 run_mask_filling_trial4.bat：Filling化バッチ処理Trial4<br>
-<22_Jupyterノートブック処理関連ファイル(2)><br>
-mask-trial3.ipynb：Mask化ノートブックTrial3<br>
-mask-filling-trial4.ipynb：Filling化ノートブックTrial4<br>
-<23_ソースプログラムファイル><br>
+<22_ソースプログラムファイル><br>
 mask_trial2.py：Mask化処理拡張版<br>
 mask_trial3.py：Trial2+医学的誤Mask防止版<br>
 mask_filling_trial3.py：制約付きFillingの基盤<br>
 mask_filling_trial4.py：Trial3に安全性filterと品質検証を追加<br>
-<31_後処理プログラムファイル><br>
+<31_Jupyterノートブック処理関連ファイル(2)><br>
+mask-trial3.ipynb：Mask化ノートブックTrial3<br>
+mask-filling-trial4.ipynb：Filling化ノートブックTrial4<br>
+<41_後処理プログラムファイル><br>
 Dkt01.py：Mask化出力ファイルからMask化カテゴリ数算出<br>
 Dkt11.py：Filling化出力ファイルから必要カラム抽出<br>
 
@@ -108,6 +108,7 @@ MyDrive/<br>
 
 (2)ノートブック処理<br>
 Google Drive上に上記構成を作成しノートブックを開いて上から順番に実行。<br>
+**※この方法がMask-Filling手法を容易に確認可能である。**<br>
 
 ## 出力ファイルと保存先(Output Files and Storage)
 Mask化処理とFilling化処理で異なるフォルダに結果ファイルが作成される。<br>
@@ -116,35 +117,64 @@ clinical_case_mask_trial3_YYYYMMDD_HHMMSS.csv: Mask化出力ファイル<br>
 <Mask化出力ファイル:mask_filling_outputs><br>
 clinical_case_mask_filling4_YYYYMMDD_HHMMSS.csv: Filling化出力ファイル<br>
 
-## No.3 マスク手法に依るデータ増強
-　SYNTHETIC4HEALTH: generating annotated synthetic clinical letters<br>
-### 処理フロー概要
-- 前処理と特徴量抽出<br>
+## マスク手法に依るデータ増強
+　論文: SYNTHETIC4HEALTH: generating annotated synthetic clinical letters (Fig.2)<br>
+<img src="docs/images/Flow01.jpg" alt="処理フロー" width="480">
+### マスク処理フロー概要
+- 1.前処理と特徴量抽出<br>
 　マスクをかける前に、まず「何を隠し、何を残すべきか」を判断するための解析<br>
-　　・構造の抽出<br>
-　　・個人情報の特定<br>
-　　・医学用語･エンティティの認識<br>
-　　・品詞(POS)タグ付け<br>
-- マスク処理の実行<br>
+　　・構造の抽出(Structure Extraction):<br>
+      コロン(:)や大文字の見出しなどを特定しカルテの骨組み(テンプレート)として維持<br>
+　　・個人情報の特定(Privacy Information Identification):<br>
+      氏名、日付、場所、電話番号、メールアドレスなどを、NER(命名エンティティ認識)
+      や正規表現を用いて特定しこれらは必ずマスクの対象とする<br>
+　　・医学用語･エンティティの認識:<br>
+　　　病名、処置、薬品名などを特定。これらは臨床的な整合性を保つために原則として
+　　　マスクせずに引用<br>
+　　・品詞(POS)タグ付け:<br>
+　　　名詞や動詞などを分類し後の「品詞ベースのマスク戦略」に使用<br>
+- 2.マスク処理の実行<br>
 　特徴抽出の結果に基づき、以下の戦略でテキストの一部を <mask> トークンに置換<br>
-　　・ランダムマスク<br>
-　　・品詞ベースマスク<br>
-　　・ストップワードマスク<br>
-- 言語モデルによる穴埋め生成<br>
-　マスクされたテキスト（Masked Letters）を言語モデル（Bio_ClinicalBERT等）に入力<br>
+　　・ランダムマスク:<br>
+　　　指定した割合(0%～100%)で単語をランダムに隠す<br>
+　　・品詞ベースマスク:<br>
+　　　名詞のみ、あるいは動詞のみを狙ってマスク<br>
+　　・ストップワードマスク:<br>
+　　　意味に影響の少ない単語(a, the等)をマスクし文の多様性を生み出す<br>
+- 3.言語モデルによる穴埋め生成<br>
+　マスク化テキスト(Msked Letters)を言語モデル(Bio_ClinicalBERT等)に入力<br>
 　　・単語予測による<mask>部分の埋め合わせ<br>
 　　・症例の臨床的事実を維持しつつ新合成カルテ生成<br>
-- 後処理<br>
+- 4.後処理<br>
 　　・匿名化個所の空白の充填<br>
 　　・誤記等のスペル修正で品質向上<br>
-
-<img src="docs/images/Flow01.jpg" alt="処理フロー" width="480">
 
 ### 使用モデル
 - MLM(Masked Language Model)モデル(Bio_ClinicalBERT等)<br>
 　Mask-fillingの中心処理のモデル<br>
 - 生成AI(BioGPT, GPT-3.5-Turbo等)<br>
 　評価(LLM-as-a-Judge)モデル<br>
+
+### Mask穴埋め語彙リスト
+Mask化対象語彙は以下の8つのカテゴリに分類してMask化されており、Mask化する際に
+置換制約が定めらておりこれに基づいて語彙の置換処理を実施<br>
+DATE,SEXはほぼ同じ値に固定。AGEはある程度の範囲でばらつく。
+NAME,IDは全て異なる値となり、LOCATION,ORGANIZATION,LOW_RISK_WORDINGは
+4-5種類の範囲である程度ばらつく。置換制約(replacement_constraints)は
+人間向けの制約説明であり、ルールベース処理では変更しても Filling 結果には
+それほど影響しない。Filling が実際に参照する制御情報は、mask_metadata +
+ FillingConfigである。<br>
+
+| Mask化カテゴリ | 置換制約(replacement_constraints) |
+| ---- | ---- |
+|AGE | 同じ年齢区分（成人）内でのみ置き換え、年齢表記はそのまま維持する|
+|DATE | 同じケース内のすべての日付を同じオフセット分ずらし、時系列を維持する|
+|ID | 同じ大まかな年代順の形式を用いて、架空の識別子に置き換える|
+|LOCATION | 個人を特定できない架空の場所や大まかな場所に置き換える|
+|LOW_RISK_WORDING | 同じ役割を持つ、臨床的に中立な単語のみに置き換える|
+|NAME | 架空の人名または中立的なプレースホルダーに置き換えてください|
+|ORGANIZATION | 架空の機関名または中立的なプレースホルダーに置き換えてください|
+|SEX | 関連する代名詞や性別に関する事実がすべて一貫して更新されない限り、元の性別を維持することを優先する|
 
 ### 将来のマスク処理向けモデル
 - Mask-filling向けモデルとして以下のモデルが検討されている。<br>
