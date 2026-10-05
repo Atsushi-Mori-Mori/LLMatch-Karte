@@ -15,16 +15,16 @@ if not defined AUGMENTATION_FACTOR set "AUGMENTATION_FACTOR=5"
 if not defined TOP_K set "TOP_K=12"
 if not defined CHANGE_SEX set "CHANGE_SEX=true"
 
-rem When omitted, use the newest CSV produced by run_mask_trial2.bat.
+rem When omitted, use the newest CSV produced by run_mask_trial3.bat.
 if not defined INPUT_CSV (
-    for /f "delims=" %%F in ('dir /b /a-d /o-d "%REPO_DIR%mask_trial_outputs\clinical_case_mask_trial2_*.csv" 2^>nul') do (
+    for /f "delims=" %%F in ('dir /b /a-d /o-d "%REPO_DIR%mask_trial_outputs\clinical_case_mask_trial3_*.csv" 2^>nul') do (
         if not defined INPUT_CSV set "INPUT_CSV=mask_trial_outputs/%%F"
     )
 )
 
 if not defined INPUT_CSV (
-    echo [ERROR] No mask-trial2 CSV was found.
-    echo [ERROR] Run run_mask_trial2.bat first or specify an input CSV.
+    echo [ERROR] No mask-trial3 CSV was found.
+    echo [ERROR] Run run_mask_trial3.bat first or specify an input CSV.
     exit /b 2
 )
 

@@ -1,9 +1,8 @@
 # プロジェクト(Project)
 　本プロジェクトは松尾研LLM CommunityにおけるLLMatchでの電子カルテプロジェクトの
 取組みの一つである。希少ウィルス感染の自由形式のカルテからFHIR形式の構造化電子カルテを
-作成することが目的である。日本ではほとんど感染例のないアレナウィルス等による感染症を扱う。
-本GithubではMask-Filling手法による合成データの試行について記載している。
-Mask-Filling手法については関連リンクに論文を示している。<br>
+作成することが目的である。本GithubではMask-Filling手法による合成データの試行
+について記載している。Mask-Filling手法については関連リンクに論文を示している。<br>
 
 <img src="docs/images/clinicalAI.jpg" alt="電子カルテ" width="480">
 
@@ -59,6 +58,19 @@ MyDrive/<br>
 処理自体には必須ではありません。ただし、現在のバッチファイルはGPU使用を前提
 にしています。<br>
 ### 環境構築
+依存一覧はリポジトリ直下の`requirements.txt`です。Python 3.12を用意し、WSL内でリポジトリへ移動して次を実行します。バッチが参照する仮想環境は`~/.venvs/maskfill_env`です。
+
+```bash
+python3.12 -m venv ~/.venvs/maskfill_env
+source ~/.venvs/maskfill_env/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+python -c "import torch; print(torch.cuda.is_available())"
+```
+
+FillingバッチにはCUDA対応GPUとドライバーが必要です。上の確認が`False`の場合はCUDA環境を確認してください。CPUで実行する場合はPythonプログラムを直接呼び出し、`--device cpu`を指定します。
+
 - コマンドプロンプトを開く<br>
 - WSLが利用できるか確認する<br>
 　WSLがインストールされていない場合は、 wsl --install -d Ubuntu<br>
@@ -107,7 +119,14 @@ MyDrive/<br>
   [INFO] Max rows            : 3<br>
 
 (2)ノートブック処理<br>
-Google Drive上に上記構成を作成しノートブックを開いて上から順番に実行。<br>
+Google Driveの`MyDrive/LLMatch2026`に上記構成を作成し、ノートブックを上から順番に実行します。依存パッケージが不足する場合は、Driveをマウントした後に次を実行してください。
+
+```python
+%pip install -r /content/drive/MyDrive/LLMatch2026/requirements.txt
+!python -m spacy download en_core_web_sm
+```
+
+別の場所に配置する場合は、初期化セルより前に環境変数`HECTA_REPO_DIR`へリポジトリのパスを設定してください。<br>
 **※この方法がMask-Filling手法を容易に確認可能である。**<br>
 
 ## 出力ファイルと保存先(Output Files and Storage)

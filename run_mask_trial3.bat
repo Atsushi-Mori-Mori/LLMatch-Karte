@@ -7,7 +7,7 @@ set "INPUT_CSV=%~1"
 set "OUTPUT_DIR=%~2"
 set "MAX_ROWS=%~3"
 
-if not defined INPUT_CSV set "INPUT_CSV=example/carte_example.csv"
+if not defined INPUT_CSV set "INPUT_CSV=example/karte_example.csv"
 if not defined OUTPUT_DIR set "OUTPUT_DIR=mask_trial_outputs"
 
 echo [INFO] Repository : %REPO_DIR%
